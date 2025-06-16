@@ -1,6 +1,7 @@
 package com.careertrack.tracker.controller;
 
 import com.careertrack.tracker.model.JobApplication;
+import com.careertrack.tracker.model.Status;
 import com.careertrack.tracker.repository.JobApplicationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +16,16 @@ public class JobApplicationController {
     private JobApplicationRepository jobApplicationRepository;
     
     @GetMapping
-    public List<JobApplication> getAllApplications() {
+    public List<JobApplication> getAllApplications(
+            @RequestParam(required = false) Status status,
+            @RequestParam(required = false) Long companyId) {
+        
+        if (status != null) {
+            return jobApplicationRepository.findByStatus(status);
+        }
+        if (companyId != null) {
+            return jobApplicationRepository.findByCompanyId(companyId);
+        }
         return jobApplicationRepository.findAll();
     }
     
@@ -29,6 +39,6 @@ public class JobApplicationController {
         return jobApplicationRepository.findById(id).orElse(null);
     }
     
-    // TODO: add filtering by status and company
     // TODO: add status update endpoint
+    // TODO: add pagination later
 }
