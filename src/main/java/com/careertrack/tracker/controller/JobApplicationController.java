@@ -39,6 +39,16 @@ public class JobApplicationController {
         return jobApplicationRepository.findById(id).orElse(null);
     }
     
-    // TODO: add status update endpoint
+    @PatchMapping("/{id}/status")
+    public JobApplication updateStatus(@PathVariable Long id, @RequestParam Status status) {
+        JobApplication app = jobApplicationRepository.findById(id).orElse(null);
+        if (app != null) {
+            app.setStatus(status);
+            return jobApplicationRepository.save(app);
+        }
+        return null;
+    }
+    
     // TODO: add pagination later
+    // TODO: add proper error handling
 }
