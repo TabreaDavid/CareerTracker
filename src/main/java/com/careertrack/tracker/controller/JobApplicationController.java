@@ -6,7 +6,9 @@ import com.careertrack.tracker.repository.JobApplicationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/applications")
@@ -47,6 +49,15 @@ public class JobApplicationController {
             return jobApplicationRepository.save(app);
         }
         return null;
+    }
+    
+    @GetMapping("/stats/by-status")
+    public Map<String, Long> getStatsByStatus() {
+        Map<String, Long> stats = new HashMap<>();
+        for (Status status : Status.values()) {
+            stats.put(status.name(), jobApplicationRepository.countByStatus(status));
+        }
+        return stats;
     }
     
     // TODO: add pagination later
