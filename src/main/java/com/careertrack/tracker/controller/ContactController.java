@@ -2,6 +2,7 @@ package com.careertrack.tracker.controller;
 
 import com.careertrack.tracker.model.Contact;
 import com.careertrack.tracker.repository.ContactRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,12 +21,17 @@ public class ContactController {
     }
     
     @PostMapping
-    public Contact createContact(@RequestBody Contact contact) {
+    public Contact createContact(@Valid @RequestBody Contact contact) {
         return contactRepository.save(contact);
     }
     
     @GetMapping("/{id}")
     public Contact getContact(@PathVariable Long id) {
         return contactRepository.findById(id).orElse(null);
+    }
+    
+    @DeleteMapping("/{id}")
+    public void deleteContact(@PathVariable Long id) {
+        contactRepository.deleteById(id);
     }
 }

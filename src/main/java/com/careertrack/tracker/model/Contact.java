@@ -1,6 +1,8 @@
 package com.careertrack.tracker.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class Contact {
@@ -9,8 +11,12 @@ public class Contact {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    @NotBlank(message = "Contact name is required")
     private String name;
+    
+    @Email(message = "Invalid email format")
     private String email;
+    
     private String phone;
     
     @ManyToOne

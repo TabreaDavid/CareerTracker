@@ -1,6 +1,8 @@
 package com.careertrack.tracker.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Entity
@@ -10,10 +12,12 @@ public class JobApplication {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    @NotBlank(message = "Job title is required")
     private String title;
     
     @ManyToOne
     @JoinColumn(name = "company_id")
+    @NotNull(message = "Company is required")
     private Company company;
     
     @ManyToOne
@@ -21,6 +25,7 @@ public class JobApplication {
     private Contact contact;
     
     @Enumerated(EnumType.STRING)
+    @NotNull(message = "Status is required")
     private Status status;
     
     private LocalDateTime appliedAt;

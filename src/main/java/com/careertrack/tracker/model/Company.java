@@ -1,6 +1,7 @@
 package com.careertrack.tracker.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class Company {
@@ -9,7 +10,9 @@ public class Company {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    @NotBlank(message = "Company name is required")
     private String name;
+    
     private String location;
     
     // TODO: add website field later

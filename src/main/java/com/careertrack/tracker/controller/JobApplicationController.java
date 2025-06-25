@@ -3,6 +3,7 @@ package com.careertrack.tracker.controller;
 import com.careertrack.tracker.model.JobApplication;
 import com.careertrack.tracker.model.Status;
 import com.careertrack.tracker.repository.JobApplicationRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +33,7 @@ public class JobApplicationController {
     }
     
     @PostMapping
-    public JobApplication createApplication(@RequestBody JobApplication application) {
+    public JobApplication createApplication(@Valid @RequestBody JobApplication application) {
         return jobApplicationRepository.save(application);
     }
     
@@ -58,6 +59,11 @@ public class JobApplicationController {
             stats.put(status.name(), jobApplicationRepository.countByStatus(status));
         }
         return stats;
+    }
+    
+    @DeleteMapping("/{id}")
+    public void deleteApplication(@PathVariable Long id) {
+        jobApplicationRepository.deleteById(id);
     }
     
     // TODO: add pagination later
