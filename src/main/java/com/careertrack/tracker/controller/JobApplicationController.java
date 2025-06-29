@@ -1,10 +1,12 @@
 package com.careertrack.tracker.controller;
 
+import com.careertrack.tracker.exception.ResourceNotFoundException;
 import com.careertrack.tracker.model.JobApplication;
 import com.careertrack.tracker.model.Status;
 import com.careertrack.tracker.repository.JobApplicationRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -39,17 +41,16 @@ public class JobApplicationController {
     
     @GetMapping("/{id}")
     public JobApplication getApplication(@PathVariable Long id) {
-        return jobApplicationRepository.findById(id).orElse(null);
+        return jobApplicationRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Application not found with id: " + id));
     }
     
     @PatchMapping("/{id}/status")
     public JobApplication updateStatus(@PathVariable Long id, @RequestParam Status status) {
-        JobApplication app = jobApplicationRepository.findById(id).orElse(null);
-        if (app != null) {
-            app.setStatus(status);
-            return jobApplicationRepository.save(app);
-        }
-        return null;
+        JobApplication app = jobApplicationRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Application not found with id: " + id));
+        app.setStatus(status);
+        return jobApplicationRepository.save(app);
     }
     
     @GetMapping("/stats/by-status")
@@ -62,10 +63,13 @@ public class JobApplicationController {
     }
     
     @DeleteMapping("/{id}")
-    public void deleteApplication(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteApplication(@PathVariable Long id) {
+        if (!jobApplicationRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Application not found with id: " + id);
+        }
         jobApplicationRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
     
     // TODO: add pagination later
-    // TODO: add proper error handling
 }

@@ -1,9 +1,11 @@
 package com.careertrack.tracker.controller;
 
+import com.careertrack.tracker.exception.ResourceNotFoundException;
 import com.careertrack.tracker.model.Contact;
 import com.careertrack.tracker.repository.ContactRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,11 +29,16 @@ public class ContactController {
     
     @GetMapping("/{id}")
     public Contact getContact(@PathVariable Long id) {
-        return contactRepository.findById(id).orElse(null);
+        return contactRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Contact not found with id: " + id));
     }
     
     @DeleteMapping("/{id}")
-    public void deleteContact(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteContact(@PathVariable Long id) {
+        if (!contactRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Contact not found with id: " + id);
+        }
         contactRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }
