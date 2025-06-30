@@ -6,6 +6,10 @@ import com.careertrack.tracker.model.Status;
 import com.careertrack.tracker.repository.JobApplicationRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,17 +25,22 @@ public class JobApplicationController {
     private JobApplicationRepository jobApplicationRepository;
     
     @GetMapping
-    public List<JobApplication> getAllApplications(
+    public Page<JobApplication> getAllApplications(
             @RequestParam(required = false) Status status,
-            @RequestParam(required = false) Long companyId) {
+            @RequestParam(required = false) Long companyId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "lastUpdatedAt") String sortBy) {
+        
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
         
         if (status != null) {
-            return jobApplicationRepository.findByStatus(status);
+            return jobApplicationRepository.findByStatus(status, pageable);
         }
         if (companyId != null) {
-            return jobApplicationRepository.findByCompanyId(companyId);
+            return jobApplicationRepository.findByCompanyId(companyId, pageable);
         }
-        return jobApplicationRepository.findAll();
+        return jobApplicationRepository.findAll(pageable);
     }
     
     @PostMapping
@@ -70,6 +79,4 @@ public class JobApplicationController {
         jobApplicationRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
-    
-    // TODO: add pagination later
 }
