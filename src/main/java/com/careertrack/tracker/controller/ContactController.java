@@ -33,6 +33,19 @@ public class ContactController {
                 .orElseThrow(() -> new ResourceNotFoundException("Contact not found with id: " + id));
     }
     
+    @PutMapping("/{id}")
+    public Contact updateContact(@PathVariable Long id, @Valid @RequestBody Contact updatedContact) {
+        return contactRepository.findById(id)
+                .map(contact -> {
+                    contact.setName(updatedContact.getName());
+                    contact.setEmail(updatedContact.getEmail());
+                    contact.setPhone(updatedContact.getPhone());
+                    contact.setCompany(updatedContact.getCompany());
+                    return contactRepository.save(contact);
+                })
+                .orElseThrow(() -> new ResourceNotFoundException("Contact not found with id: " + id));
+    }
+    
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteContact(@PathVariable Long id) {
         if (!contactRepository.existsById(id)) {

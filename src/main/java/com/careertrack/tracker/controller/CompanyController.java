@@ -33,6 +33,18 @@ public class CompanyController {
                 .orElseThrow(() -> new ResourceNotFoundException("Company not found with id: " + id));
     }
     
+    @PutMapping("/{id}")
+    public Company updateCompany(@PathVariable Long id, @Valid @RequestBody Company updatedCompany) {
+        return companyRepository.findById(id)
+                .map(company -> {
+                    company.setName(updatedCompany.getName());
+                    company.setLocation(updatedCompany.getLocation());
+                    company.setWebsite(updatedCompany.getWebsite());
+                    return companyRepository.save(company);
+                })
+                .orElseThrow(() -> new ResourceNotFoundException("Company not found with id: " + id));
+    }
+    
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCompany(@PathVariable Long id) {
         if (!companyRepository.existsById(id)) {

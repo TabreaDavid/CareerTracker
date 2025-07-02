@@ -14,8 +14,7 @@ public class Company {
     private String name;
     
     private String location;
-    
-    // TODO: add website field later
+    private String website;
     
     public Company() {}
     
@@ -46,5 +45,13 @@ public class Company {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
     }
 }

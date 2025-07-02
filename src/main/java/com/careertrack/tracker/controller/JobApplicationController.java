@@ -54,6 +54,20 @@ public class JobApplicationController {
                 .orElseThrow(() -> new ResourceNotFoundException("Application not found with id: " + id));
     }
     
+    @PutMapping("/{id}")
+    public JobApplication updateApplication(@PathVariable Long id, @Valid @RequestBody JobApplication updated) {
+        return jobApplicationRepository.findById(id)
+                .map(app -> {
+                    app.setTitle(updated.getTitle());
+                    app.setCompany(updated.getCompany());
+                    app.setContact(updated.getContact());
+                    app.setStatus(updated.getStatus());
+                    app.setNotes(updated.getNotes());
+                    return jobApplicationRepository.save(app);
+                })
+                .orElseThrow(() -> new ResourceNotFoundException("Application not found with id: " + id));
+    }
+    
     @PatchMapping("/{id}/status")
     public JobApplication updateStatus(@PathVariable Long id, @RequestParam Status status) {
         JobApplication app = jobApplicationRepository.findById(id)
