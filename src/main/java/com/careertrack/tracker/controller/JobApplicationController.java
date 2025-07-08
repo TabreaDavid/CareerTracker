@@ -62,7 +62,10 @@ public class JobApplicationController {
                     app.setCompany(updated.getCompany());
                     app.setContact(updated.getContact());
                     app.setStatus(updated.getStatus());
-                    app.setNotes(updated.getNotes());
+                    // Fix: handle null notes gracefully
+                    if (updated.getNotes() != null) {
+                        app.setNotes(updated.getNotes());
+                    }
                     return jobApplicationRepository.save(app);
                 })
                 .orElseThrow(() -> new ResourceNotFoundException("Application not found with id: " + id));
@@ -83,6 +86,11 @@ public class JobApplicationController {
             stats.put(status.name(), jobApplicationRepository.countByStatus(status));
         }
         return stats;
+    }
+    
+    @GetMapping("/company/{companyId}")
+    public List<JobApplication> getApplicationsByCompany(@PathVariable Long companyId) {
+        return jobApplicationRepository.findByCompanyId(companyId);
     }
     
     @DeleteMapping("/{id}")
