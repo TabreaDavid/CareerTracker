@@ -3,6 +3,9 @@ package com.careertrack.tracker.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -28,7 +31,10 @@ public class JobApplication {
     @NotNull(message = "Status is required")
     private Status status;
     
+    @CreationTimestamp
     private LocalDateTime appliedAt;
+    
+    @UpdateTimestamp
     private LocalDateTime lastUpdatedAt;
     
     private String notes;
@@ -39,8 +45,6 @@ public class JobApplication {
         this.title = title;
         this.company = company;
         this.status = status;
-        this.appliedAt = LocalDateTime.now();
-        this.lastUpdatedAt = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -81,7 +85,6 @@ public class JobApplication {
 
     public void setStatus(Status status) {
         this.status = status;
-        this.lastUpdatedAt = LocalDateTime.now();
     }
 
     public LocalDateTime getAppliedAt() {
